@@ -1,0 +1,21 @@
+﻿Test 的内容基本上没有陷阱
+1. Test 2: insert的时候会有重复的countrycode（table countrylanguage）
+2. Test 6: insert的前面有‘#’
+3. After running Test 3, Tuple 'Morn' was deleted, Test 4 第一项指令是select * from City where Name='Morn';
+这三个测试在参考的运行时都能够找出来
+
+可是我发现有些指令不能执行
+1. Test 4: select * from City where Name>='Morn' and name<='Tbessa';
+=> 这应该有14个tuples 被select出来可是会显示
+	The attribute name doesn't exist, select tuples failed
+
+2. Test 4: create index name_idx on City(Name);
+=> After test 3 deleting, create index 之后没有回应
+=> 如果在create index 之后再delete tuple,会出现
+	java.lang.ArrayIndexOutOfBoundsException
+
+3. drop index name_idx on City;
+=> can't run, 会显示
+	Synthetic error near: on 
+=> 参考程序的输入指令: drop index name_idx; 
+
